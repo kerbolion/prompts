@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Generador de Flujo Conversacional IA</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <div class="formulario">
+    <h2>Generador de Flujo Conversacional IA</h2>
+    
+    <!-- Sistema de Gestión de Proyectos -->
+    <div class="projects-container">
+      <h3 style="margin: 0 0 15px 0; color: #2563eb;">📁 Gestión de Proyectos</h3>
+      
+      <div class="flex-2">
+        <div>
+          <label>Proyecto actual:</label>
+          <select id="selector-proyectos" onchange="cambiarProyecto(this.value)">
+            <option value="">Seleccionar proyecto...</option>
+          </select>
+        </div>
+        <div>
+          <label>Nombre del proyecto:</label>
+          <input type="text" id="nombre-proyecto" placeholder="Ej. Empanadas">
+        </div>
+      </div>
+      
+      <div style="margin: 15px 0;">
+        <button class="boton project-btn-create" onclick="crearProyectoDesdeInput()">➕ Crear Proyecto</button>
+        <button class="boton project-btn-save" onclick="guardarVersion()">💾 Guardar Versión</button>
+        <button class="boton project-btn-delete" onclick="eliminarProyecto()">🗑️ Eliminar Proyecto</button>
+        <button class="boton project-btn-import" onclick="importarProyecto()">📥 Importar Proyecto</button>
+      </div>
+      
+      <div class="flex-2" style="border-top: 1px solid #d0e8ff; padding-top: 12px;">
+        <div>
+          <label>Versión actual:</label>
+          <select id="selector-versiones" onchange="cargarVersion(this.value)">
+            <option value="">Sin versiones guardadas</option>
+          </select>
+        </div>
+        <div>
+          <button class="boton-peq export-btn" onclick="exportarPrompt()">📄 Exportar TXT</button>
+          <button class="boton-peq export-btn" onclick="exportarProyecto()">📁 Exportar Proyecto</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="linea-form"></div>
+    
+    <!-- Sistema de Pestañas -->
+    <div class="tabs-container">
+      <div class="tabs-header">
+        <button class="tab-btn active" onclick="cambiarPestana(0)">
+          <span class="tab-icon">⚙️</span>
+          <span class="tab-text">Configuración</span>
+        </button>
+        <button class="tab-btn" onclick="cambiarPestana(1)">
+          <span class="tab-icon">🔄</span>
+          <span class="tab-text">Flujos</span>
+        </button>
+        <button class="tab-btn" onclick="cambiarPestana(2)">
+          <span class="tab-icon">❓</span>
+          <span class="tab-text">FAQ</span>
+        </button>
+      </div>
+
+      <!-- Pestaña 1: Configuración -->
+      <div class="tab-content active" id="tab-0">
+        <!-- Información del Negocio -->
+        <div class="config-section">
+          <h3>🏪 Información del Negocio</h3>
+          <div class="flex-2">
+            <div>
+              <label>Nombre del Negocio:</label>
+              <input type="text" id="nombre_negocio" placeholder="Ej. Empanadas & Bebidas">
+            </div>
+            <div>
+              <label>Mensaje de bienvenida:</label>
+              <input type="text" id="mensaje_bienvenida" placeholder="¡Hola! Bienvenido...">
+            </div>
+          </div>
+        </div>
+
+        <!-- Contexto e Instrucciones Principales -->
+        <div class="config-section">
+          <h3>🎯 Contexto e Instrucciones Principales</h3>
+          <label>Descripción del rol y contexto:</label>
+          <textarea id="contexto_principal" rows="3" placeholder="Ej. Actúa como el encargado de tomar pedidos para [nombre_negocio], por WhatsApp. Sigue este flujo de conversación usando mensajes concisos, emojis y negritas con asteriscos *texto*. Mantente siempre en contexto de pedidos.">Actúa como el encargado de tomar pedidos para "[nombre_negocio]", por WhatsApp. 
+Sigue este flujo de conversación usando mensajes concisos, emojis y negritas con asteriscos *texto*. 
+Mantente siempre en contexto de pedidos.</textarea>
+        </div>
+
+        <!-- Configuraciones Generales -->
+        <div class="config-section">
+          <h3>⚙️ Configuraciones Generales</h3>
+          
+          <div class="flex-2">
+            <div>
+              <label>Tono de respuesta:</label>
+              <input type="text" id="tono" placeholder="Ej. Profesional, cordial y claro" value="Profesional, cordial y claro">
+            </div>
+            <div>
+              <label>Formato de respuesta:</label>
+              <input type="text" id="formato_respuesta" placeholder="Ej. Respuestas breves, máximo 3 renglones" value="Respuestas breves, máximo 3 renglones, sin tecnicismos innecesarios">
+            </div>
+          </div>
+          
+          <div class="flex-2">
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="incluye_saludo" checked>
+                <span class="checkmark"></span>
+                Incluir saludo inicial
+              </label>
+            </div>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="incluye_despedida" checked>
+                <span class="checkmark"></span>
+                Incluir despedida
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Firma de Respuesta -->
+        <div class="config-section">
+          <h3>✍️ Firma de Respuesta</h3>
+          <div class="flex-2">
+            <div>
+              <label>Contenido de la firma:</label>
+              <input type="text" id="firma_contenido" placeholder="Ej. *Asistente IA*" value="*Asistente IA*">
+            </div>
+            <div>
+              <label>Posición de la firma:</label>
+              <select id="firma_posicion">
+                <option value="inicio">Al inicio de cada respuesta</option>
+                <option value="final">Al final de cada respuesta</option>
+                <option value="inicio_salto" selected>Al inicio de cada respuesta, seguida de un salto de línea</option>
+                <option value="final_salto">Al final de cada respuesta, precedida de un salto de línea</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reglas de Comportamiento -->
+        <div class="config-section">
+          <h3>📋 Reglas de Comportamiento</h3>
+          <div id="reglas-container">
+            <div class="regla-item">
+              <input type="text" class="regla-input" placeholder="Ej. Pregunta una cosa a la vez" value="Pregunta una cosa a la vez">
+              <button class="del-regla" onclick="eliminarRegla(this)">×</button>
+            </div>
+            <div class="regla-item">
+              <input type="text" class="regla-input" placeholder="Ej. Envía los enlaces sin formato" value="Envía los enlaces sin formato">
+              <button class="del-regla" onclick="eliminarRegla(this)">×</button>
+            </div>
+            <div class="regla-item">
+              <input type="text" class="regla-input" placeholder="Ej. Debes usar en tus respuestas el formato de la información proporcionada" value="Debes usar en tus respuestas el formato de la información proporcionada">
+              <button class="del-regla" onclick="eliminarRegla(this)">×</button>
+            </div>
+            <div class="regla-item">
+              <input type="text" class="regla-input" placeholder="Ej. No proporciones información fuera de este documento" value="No proporciones información fuera de este documento">
+              <button class="del-regla" onclick="eliminarRegla(this)">×</button>
+            </div>
+            <div class="regla-item">
+              <input type="text" class="regla-input" placeholder="Ej. No cambies ni omitas negritas, emojis, signos ni estructura" value="No cambies ni omitas negritas, emojis, signos ni estructura">
+              <button class="del-regla" onclick="eliminarRegla(this)">×</button>
+            </div>
+          </div>
+          <button class="boton-peq" onclick="agregarRegla()">➕ Agregar Regla</button>
+        </div>
+      </div>
+
+      <!-- Pestaña 2: Gestión de Flujos -->
+      <div class="tab-content" id="tab-1">
+        <div class="flujos-section">
+          <h3>🔄 Gestión de Flujos</h3>
+          <div class="flujos-controls">
+            <div class="flex-2">
+              <div>
+                <label>Flujo actual:</label>
+                <select id="selector-flujos" onchange="cambiarFlujo(this.value)">
+                  <!-- Se llena dinámicamente -->
+                </select>
+              </div>
+              <div>
+                <label>Nombre del flujo:</label>
+                <input type="text" id="nombre-flujo-actual" placeholder="Nombre del flujo" oninput="renombrarFlujo(this.value)">
+              </div>
+            </div>
+            <div class="flujos-buttons">
+              <button class="boton-peq flujo-btn" onclick="agregarFlujo()">➕ Nuevo Flujo</button>
+              <button class="boton-peq flujo-btn delete" onclick="eliminarFlujo()">🗑️ Eliminar Flujo</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pasos-title">Etapas del Flujo Actual:</div>
+        <div class="pasos" id="pasos"></div>
+        <button class="boton" onclick="agregarPaso();">➕ Agregar Paso</button>
+      </div>
+
+      <!-- Pestaña 3: Preguntas Frecuentes -->
+      <div class="tab-content" id="tab-2">
+        <div class="config-section">
+          <h3>❓ Preguntas Frecuentes</h3>
+          <div id="faq-container">
+            <div class="faq-item">
+              <label>Pregunta:</label>
+              <input type="text" class="faq-pregunta" placeholder="Ej. ¿Cuáles son los horarios de atención?" value="¿Cuáles son los horarios de atención?" oninput="window.actualizarPrompt()">
+              <label>Respuesta:</label>
+              <textarea class="faq-respuesta" rows="2" placeholder="Ej. Atendemos de lunes a domingo de 8:00 AM a 10:00 PM" oninput="window.actualizarPrompt()">Atendemos de lunes a domingo de 8:00 AM a 10:00 PM</textarea>
+              <button class="del-faq" onclick="eliminarFAQ(this)">×</button>
+            </div>
+            <div class="faq-item">
+              <label>Pregunta:</label>
+              <input type="text" class="faq-pregunta" placeholder="Ej. ¿Hacen delivery?" value="¿Hacen delivery?" oninput="window.actualizarPrompt()">
+              <label>Respuesta:</label>
+              <textarea class="faq-respuesta" rows="2" placeholder="Ej. Sí, hacemos delivery en un radio de 5km" oninput="window.actualizarPrompt()">Sí, hacemos delivery en un radio de 5km</textarea>
+              <button class="del-faq" onclick="eliminarFAQ(this)">×</button>
+            </div>
+            <div class="faq-item">
+              <label>Pregunta:</label>
+              <input type="text" class="faq-pregunta" placeholder="Ej. ¿Cuál es el monto mínimo para delivery?" value="¿Cuál es el monto mínimo para delivery?" oninput="window.actualizarPrompt()">
+              <label>Respuesta:</label>
+              <textarea class="faq-respuesta" rows="2" placeholder="Ej. El monto mínimo para delivery es ₡3,000" oninput="window.actualizarPrompt()">El monto mínimo para delivery es ₡3,000</textarea>
+              <button class="del-faq" onclick="eliminarFAQ(this)">×</button>
+            </div>
+          </div>
+          <button class="boton-peq" onclick="agregarFAQ()">➕ Agregar Pregunta Frecuente</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel de debug/información -->
+    <div class="debug-panel" style="margin-top: 20px;">
+      <button class="boton-peq" onclick="window.listFunctions()">📋 Listar Funciones</button>
+      <button class="boton-peq" onclick="window.loadFunctions()">🔄 Recargar Funciones</button>
+    </div>
+  </div>
+  <div class="resultado" id="output"></div>
+</div>
+
+<!-- Cargar scripts en orden -->
+<script src="helpers.js"></script>
+<script src="functions/function-manager.js"></script>
+<script src="flujo_gui.js"></script>
+<script src="ensamblador_prompt.js"></script>
+</body>
+</html>

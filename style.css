@@ -1,0 +1,812 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif; 
+  background: #f6f8fa; 
+  margin: 0;
+}
+
+.container {
+  display: flex; 
+  height: 100vh;
+}
+
+.formulario, .resultado {
+  width: 50%; 
+  min-width: 370px; 
+  /* max-width: 760px; */
+  background: #fff; 
+  overflow-y: auto;
+  padding: 36px 34px 36px 34px; 
+  box-sizing: border-box;
+}
+
+.resultado {
+  background: #f9f6fe;
+  border: 1.7px solid #e4dbfa;
+  border-radius: 16px;
+  box-shadow: 0 2px 14px #decaf820;
+  color: #292340;
+  font-family: 'JetBrains Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 16.2px;
+  line-height: 1.74;
+  padding: 36px 40px 36px 40px;
+  min-height: 80vh;
+  white-space: normal;
+  letter-spacing: 0.21px;
+  overflow-y: auto;
+}
+
+h2 { 
+  font-size: 1.75rem; 
+  margin-top: 0; 
+  letter-spacing: -1px; 
+  margin-bottom: 18px;
+}
+
+label {
+  display: block; 
+  font-weight: 600; 
+  margin-bottom: 6px; 
+  color: #3d3663;
+}
+
+input, textarea, select {
+  width: -webkit-fill-available; 
+  margin-bottom: 20px; 
+  padding: 10px 8px; 
+  font-size: 15px;
+  border: 1.2px solid #dad2ee; 
+  border-radius: 6px; 
+  background: #fafaff; 
+  color: #332e4d;
+  /* transition: .15s border; */
+}
+
+textarea {
+  resize: vertical;
+}
+
+input:focus, textarea:focus, select:focus { 
+  border-color: #8A50E2; 
+  outline: none;
+}
+
+.flex-2 { 
+  display: flex; 
+  gap: 16px;
+}
+
+.flex-2 > * { 
+  flex: 1;
+}
+
+.paso-box {
+  background: #f5faff;
+  border: 1.5px solid #dde5ec;
+  box-shadow: 0 2px 8px #e6e6f7a0;
+  border-radius: 10px;
+  padding: 19px 20px 18px 20px;
+  margin-bottom: 22px;
+  position: relative;
+  transition: .1s box-shadow;
+}
+
+.paso-box:hover { 
+  box-shadow: 0 4px 16px #d5d6f7c0;
+}
+
+.del-paso, .move-paso { 
+  position: absolute; 
+  top: 14px; 
+  background: white; 
+  border-radius: 30%; 
+  border: none; 
+  font-size: 22px; 
+  cursor: pointer; 
+  opacity: 0.73; 
+  z-index: 2; 
+  padding: 1px 6px 1px 6px;
+}
+
+.del-paso { 
+  right: 14px; 
+  color: #da2a2a;
+}
+
+.del-paso:hover {
+  background: #fbeaea;
+}
+
+.move-paso.up { 
+  right: 48px; 
+  color: #6a2acf;
+}
+
+.move-paso.down { 
+  right: 77px; 
+  color: #5bc58f;
+}
+
+.move-paso:hover {
+  background: #eeedef;
+}
+
+.pasos-title {
+  margin: 16px 0 9px 0; 
+  font-weight: 700; 
+  font-size: 20px; 
+  color: #5a40c6;
+}
+
+.tipoPasoBox {
+  margin-bottom: 9px;
+}
+
+.num-paso {
+  background: linear-gradient(90deg, #e3d7fa, #f7c5da);
+  color: #8038b6; 
+  border-radius: 8px; 
+  font-size: 17px; 
+  padding: 3px 11px; 
+  font-weight: 700;
+  display: inline-block; 
+  margin-bottom: 10px;
+}
+
+.boton {
+  background: linear-gradient(90deg, #7b4de4 70%, #20b997 130%);
+  color: white;
+  border: none;
+  padding: 11px 18px;
+  border-radius: 7px;
+  font-size: 17px;
+  cursor: pointer;
+  font-weight: bold; 
+  letter-spacing: .5px;
+  margin: 6px 0 18px 0; 
+  box-shadow: 0 1px 7px #c7ddeb20;
+  /* transition: .08s filter; */
+  display: inline-block;
+}
+
+.boton:active { 
+  filter: brightness(.93);
+}
+
+.boton-peq {
+  padding: 5px 11px; 
+  font-size: 15px; 
+  font-weight: 600; 
+  line-height: 1; 
+  border-radius: 6px; 
+  box-shadow: none;
+  margin: 0; 
+  margin-bottom: 12px;
+  background: #ede6fb;
+  color: #4d3497; 
+  border: none; 
+  cursor: pointer; 
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.boton-peq:hover {
+  background: #e0d3f7;
+}
+
+.linea-form {
+  border-bottom: 1.5px solid #eee; 
+  margin: 27px 0 22px 0;
+}
+
+.funcion-box {
+  background: #f0e9ff; 
+  border-radius: 7px; 
+  padding: 14px 14px 8px 14px; 
+  margin-bottom: 14px; 
+  border: 1px solid #e2d3ff;
+}
+
+.funcion-box .del-funcion {
+  float: right; 
+  color: #ab17b8; 
+  cursor: pointer; 
+  font-size: 18px;
+  font-weight: bold; 
+  border: none; 
+  background: transparent; 
+  margin-top: -5px;
+}
+
+.funcion-box .del-funcion:hover { 
+  color: #e92a6b; 
+}
+
+/* Estilos para funciones con errores */
+.error-box {
+  background: #fff2f2;
+  border: 1px solid #ffcdd2;
+  color: #d32f2f;
+}
+
+.error-box .del-funcion {
+  color: #d32f2f;
+}
+
+/* Panel de debug */
+.debug-panel {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 20px;
+}
+
+.debug-panel .boton-peq {
+  margin-right: 10px;
+  margin-bottom: 5px;
+}
+
+/* Advertencia de funciones no disponibles */
+.no-functions-warning {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  color: #856404;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* Indicador de campo requerido */
+label:has(+ input[required]),
+label:has(+ textarea[required]),
+label:has(+ select[required]) {
+  position: relative;
+}
+
+label:has(+ input[required])::after,
+label:has(+ textarea[required])::after,
+label:has(+ select[required])::after {
+  content: " *";
+  color: #dc3545;
+  font-weight: bold;
+}
+
+/* Responsive */
+@media(max-width: 1100px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .formulario, .resultado { 
+    width: 100%; 
+    max-width: unset; 
+    min-width: unset;
+  }
+  
+  .flex-2 {
+    flex-direction: column;
+  }
+}
+
+.resultado br {
+  line-height: 170%;
+}
+
+.resultado strong {
+  color: #5a40c6;
+}
+
+/* Configuraciones generales */
+.config-section {
+  background: #f8fafe;
+  border: 1px solid #e1e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.config-section h3 {
+  margin: 0 0 15px 0;
+  color: #4a5568;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Checkboxes personalizados */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: normal;
+  margin-bottom: 0;
+}
+
+.checkbox-label input[type="checkbox"] {
+  display: none;
+}
+
+.checkmark {
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border: 2px solid #dad2ee;
+  border-radius: 4px;
+  margin-right: 8px;
+  position: relative;
+  /* transition: all 0.2s ease; */
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark {
+  background: #8A50E2;
+  border-color: #8A50E2;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+  content: "✓";
+  color: white;
+  font-size: 12px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+}
+
+/* Reglas de comportamiento */
+.regla-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.regla-input {
+  flex: 1;
+  margin-bottom: 0 !important;
+}
+
+.del-regla {
+  background: #ff4757;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  min-width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.del-regla:hover {
+  background: #ff3742;
+}
+
+#reglas-container {
+  margin-bottom: 12px;
+}
+
+/* Gestión de flujos */
+.flujos-section {
+  background: #f0f8ff;
+  border: 1px solid #d0e8ff;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.flujos-section h3 {
+  margin: 0 0 15px 0;
+  color: #2563eb;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.flujos-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.flujos-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.flujo-btn {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  /* transition: all 0.2s ease; */
+}
+
+.flujo-btn:not(.delete) {
+  background: #3b82f6;
+  color: white;
+}
+
+.flujo-btn:not(.delete):hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.flujo-btn.delete {
+  background: #ef4444;
+  color: white;
+}
+
+.flujo-btn.delete:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+#selector-flujos {
+  background: #fff;
+  border: 2px solid #d0e8ff;
+  color: #1e40af;
+  font-weight: 500;
+}
+
+#selector-flujos:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+#nombre-flujo-actual {
+  border: 2px solid #d0e8ff;
+}
+
+#nombre-flujo-actual:focus {
+  border-color: #3b82f6;
+}
+
+/* FAQ (Preguntas Frecuentes) */
+.faq-item {
+  background: #fff;
+  border: 1px solid #e0e6ed;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.faq-item:hover {
+  border-color: #8A50E2;
+}
+
+.faq-item label {
+  font-size: 13px;
+  color: #4a5568;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.faq-pregunta, .faq-respuesta {
+  width: 100%;
+  margin-bottom: 8px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+}
+
+.faq-pregunta:focus, .faq-respuesta:focus {
+  border-color: #8A50E2;
+}
+
+.del-faq {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #ff4757;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.del-faq:hover {
+  background: #ff3742;
+}
+
+#faq-container {
+  margin-bottom: 12px;
+}
+
+/* Contexto principal */
+#contexto_principal {
+  min-height: 80px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  line-height: 1.4;
+}
+
+/* Sistema de Gestión de Proyectos */
+.projects-container {
+  background: #f0f8ff;
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+/* Botones específicos de proyectos */
+.project-btn-create {
+  background: linear-gradient(90deg, #059669 70%, #047857 130%) !important;
+  color: white !important;
+  margin-right: 10px !important;
+}
+
+.project-btn-create:hover {
+  filter: brightness(1.1) !important;
+}
+
+.project-btn-save {
+  background: linear-gradient(90deg, #3b82f6 70%, #2563eb 130%) !important;
+  color: white !important;
+  margin-right: 10px !important;
+}
+
+.project-btn-save:hover {
+  filter: brightness(1.1) !important;
+}
+
+.project-btn-delete {
+  background: linear-gradient(90deg, #ef4444 70%, #dc2626 130%) !important;
+  color: white !important;
+  margin-right: 10px !important;
+}
+
+.project-btn-delete:hover {
+  filter: brightness(1.1) !important;
+}
+
+.project-btn-import {
+  background: linear-gradient(90deg, #8b5cf6 70%, #7c3aed 130%) !important;
+  color: white !important;
+  margin-right: 10px !important;
+}
+
+.project-btn-import:hover {
+  filter: brightness(1.1) !important;
+}
+
+.export-btn {
+  background: #059669;
+  color: white;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  /* transition: all 0.2s ease; */
+  margin-right: 8px;
+}
+
+.export-btn:hover {
+  background: #047857;
+  transform: translateY(-1px);
+}
+
+#selector-proyectos, #selector-versiones {
+  background: #fff;
+  border: 2px solid #3b82f6;
+  color: #1e40af;
+  font-weight: 500;
+  border-radius: 6px;
+}
+
+#selector-proyectos:focus, #selector-versiones:focus {
+  border-color: #1d4ed8;
+  outline: none;
+}
+
+#nombre-proyecto {
+  border: 2px solid #3b82f6;
+  border-radius: 6px;
+}
+
+#nombre-proyecto:focus {
+  border-color: #1d4ed8;
+}
+
+/* Indicadores de estado */
+.version-indicator {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.version-saved {
+  background: #d1fae5;
+  color: #047857;
+}
+
+.version-modified {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+/* Sistema de Pestañas */
+.tabs-container {
+  width: 100%;
+}
+
+.tabs-header {
+  display: flex;
+  background: #f8f9fa;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid #e9ecef;
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 16px 20px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  color: #6c757d;
+  /* transition: all 0.2s ease; */
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+}
+
+.tab-btn:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.tab-btn.active {
+  background: #fff;
+  color: #5a40c6;
+  border-bottom: 3px solid #5a40c6;
+  font-weight: 600;
+}
+
+.tab-icon {
+  font-size: 16px;
+}
+
+.tab-text {
+  font-size: 14px;
+}
+
+.tab-content {
+  display: none;
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  padding: 24px;
+  min-height: 400px;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Ajustes para las secciones dentro de pestañas */
+.tab-content .config-section {
+  margin-bottom: 24px;
+}
+
+.tab-content .config-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive para pestañas */
+@media(max-width: 768px) {
+  .tab-btn {
+    flex-direction: column;
+    padding: 12px 8px;
+    gap: 4px;
+  }
+  
+  .tab-text {
+    font-size: 12px;
+  }
+  
+  .tab-icon {
+    font-size: 18px;
+  }
+}
+.funcion-box {
+  /* transition: all 0.2s ease; */
+}
+
+.funcion-box:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(138, 80, 226, 0.1);
+}
+
+.paso-box {
+  /* transition: all 0.2s ease; */
+}
+
+.paso-box:hover {
+  transform: translateY(-2px);
+}
+
+/* Mejoras de accesibilidad */
+button:focus {
+  outline: 2px solid #8A50E2;
+  outline-offset: 2px;
+}
+
+input:invalid, textarea:invalid, select:invalid {
+  border-color: #dc3545;
+}
+
+input:valid, textarea:valid, select:valid {
+  border-color: #28a745;
+}
+
+/* Estilos para campos dinámicos */
+.campos-dinamicos {
+  background: #f8f9ff;
+  border: 1px dashed #c5d0e6;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 10px;
+}
+
+.campo-dinamico {
+  background: white;
+  border: 1px solid #e0e6ed;
+  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.campo-dinamico:hover {
+  border-color: #8A50E2;
+}
+
+.campo-dinamico input,
+.campo-dinamico textarea {
+  width: 100%;
+  margin-bottom: 4px;
+  border: 1px solid #ddd;
+  font-size: 13px;
+}
+
+.campo-dinamico input:focus,
+.campo-dinamico textarea:focus {
+  border-color: #8A50E2;
+}
+
+/* Botones para campos dinámicos */
+.campos-dinamicos button {
+  /* transition: all 0.2s ease; */
+}
+
+.campos-dinamicos button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}

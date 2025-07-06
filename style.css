@@ -496,7 +496,7 @@ label:has(+ select[required])::after {
 }
 
 .faq-pregunta, .faq-respuesta {
-  width: 100%;
+  width: -webkit-fill-available;
   margin-bottom: 8px;
   font-size: 14px;
   border: 1px solid #ddd;

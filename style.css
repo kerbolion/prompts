@@ -790,7 +790,7 @@ input:valid, textarea:valid, select:valid {
 
 .campo-dinamico input,
 .campo-dinamico textarea {
-  width: 100%;
+  width: -webkit-fill-available;
   margin-bottom: 4px;
   border: 1px solid #ddd;
   font-size: 13px;

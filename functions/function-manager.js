@@ -80,8 +80,7 @@ window.loadFunctions = function() {
     'functions/formularios.js',
     'functions/send_notification_message.js',
     'functions/send_ai_match_rule_to_user.js',
-    'functions/manage_contact_tags.js',
-    'functions/pedidos.js'
+    'functions/manage_contact_tags.js'
   ];
   
   funcionesACargar.forEach(archivo => {

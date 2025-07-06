@@ -1,6 +1,6 @@
 // Función para manejar formularios dinámicos
 window.registerFunction('formularios', {
-  label: "Crear formulario (formularios)",
+  label: "Formularios (formularios)",
   description: "Crea un formulario dinámico con campos personalizables",
   params: [
     {

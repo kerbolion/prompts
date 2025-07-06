@@ -77,11 +77,11 @@ window.unregisterFunction = function(nombre) {
 // Función para cargar funciones desde archivos
 window.loadFunctions = function() {
   const funcionesACargar = [
-    'functions/buscar_productos.js',
     'functions/formularios.js',
     'functions/send_notification_message.js',
     'functions/send_ai_match_rule_to_user.js',
-    'functions/manage_contact_tags.js'
+    'functions/manage_contact_tags.js',
+    'functions/pedidos.js'
   ];
   
   funcionesACargar.forEach(archivo => {

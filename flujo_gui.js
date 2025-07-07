@@ -1272,5 +1272,3 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log("📝 Usa window.debugApp() para información de debug");
   console.log("🧹 Usa window.limpiarTodo() para resetear (¡cuidado!)");
 });
-
-

@@ -24,11 +24,12 @@ window.actualizarPrompt = function () {
     return { pregunta, respuesta };
   }).filter(faq => faq.pregunta !== '' && faq.respuesta !== '');
   
-  function formatoPaso(p) {
-    let bloque = "- " +(p.texto||"");
+  // Función para formato de paso (VERSIÓN TEXTO PLANO)
+  function formatoPasoTextoPlano(p) {
+    let bloque = "- " + (p.texto || "");
     if(p.funciones && p.funciones.length) {
-      bloque += p.funciones.map(f=>{
-        const fn= window.funciones[f.funcion];
+      bloque += p.funciones.map(f => {
+        const fn = window.funciones[f.funcion];
         
         // Para la función formularios, usar el nombre del formulario como nombre de función
         let nombreFuncion = f.funcion;
@@ -48,7 +49,41 @@ window.actualizarPrompt = function () {
           }
         } else {
           // Para otras funciones, mostrar parámetros normales
-          params = fn.params.map(param=>param.nombre+': "'+(f.params[param.nombre]||"")+'"').join(', ');
+          params = fn.params.map(param => param.nombre + ': "' + (f.params[param.nombre] || "") + '"').join(', ');
+        }
+        
+        return `\n    Ejecuta la función: ${nombreFuncion}({${params}})`;
+      }).join("");
+    }
+    return bloque;
+  }
+  
+  // Función para formato de paso (VERSIÓN HTML)
+  function formatoPasoHTML(p) {
+    let bloque = "- " + (p.texto || "");
+    if(p.funciones && p.funciones.length) {
+      bloque += p.funciones.map(f => {
+        const fn = window.funciones[f.funcion];
+        
+        // Para la función formularios, usar el nombre del formulario como nombre de función
+        let nombreFuncion = f.funcion;
+        if (f.funcion === 'formularios' && f.params && f.params.nombre_formulario) {
+          nombreFuncion = f.params.nombre_formulario;
+        }
+        
+        // Obtener parámetros estándar (excepto nombre_formulario para formularios)
+        let params = '';
+        if (f.funcion === 'formularios') {
+          // Para formularios, mostrar los campos dinámicos con sus valores
+          if (f.camposDinamicos && f.camposDinamicos.length > 0) {
+            params = f.camposDinamicos
+              .filter(campo => campo.nombre && campo.nombre.trim() !== '')
+              .map(campo => `${campo.nombre}: "${campo.valor || ''}"`)
+              .join(', ');
+          }
+        } else {
+          // Para otras funciones, mostrar parámetros normales
+          params = fn.params.map(param => param.nombre + ': "' + (f.params[param.nombre] || "") + '"').join(', ');
         }
         
         return `<br>    Ejecuta la función: <strong>${nombreFuncion}({${params}})</strong>`;
@@ -112,7 +147,8 @@ ${faqs.map(faq => `- **${faq.pregunta}**\n  ${faq.respuesta}`).join('\n')}
 `;
   }
   
-  const prompt = `
+  // CREAR VERSIÓN TEXTO PLANO (SIN HTML)
+  const promptTextoPlano = `
 Prompt para Asistente IA – "${data.nombre_negocio||'[Nombre negocio]'}"
 
 ${contextoPrincipal}
@@ -123,25 +159,62 @@ ${instruccionesGenerales}${firmaInstruccion}${seccionFAQ}${window.flujos.map((fl
   const esUnicoFlujo = window.flujos.length === 1;
   const tituloFlujo = esUnicoFlujo ? "**Flujo principal:**" : `**${flujo.nombre}:**`;
   
+  // Usar función de texto plano
   const pasosFlujo = flujo.pasos.map((p, index) => {
-    const numeroPaso = esUnicoFlujo ? `${index + 2}. ` : `${index + 1}. `;
-    return `${numeroPaso}${formatoPaso(p)}`;
-  }).join('<br><br>');
-  
-  const mensajeBienvenida = esUnicoFlujo ? `1. Mensaje de bienvenida:
-${data.mensaje_bienvenida ? '- '+data.mensaje_bienvenida : '- ¡Hola! Bienvenido a *'+(data.nombre_negocio||'[Nombre negocio]')+'* 🥟🥤'}
-
-` : '';
+    const numeroPaso = `${index + 1}. `;
+    return `${numeroPaso}${formatoPasoTextoPlano(p)}`;
+  }).join('\n\n');
   
   return `${tituloFlujo}
 
-${mensajeBienvenida}${pasosFlujo}`;
+${pasosFlujo}`;
+}).join('\n\n---\n\n')}
+  `.trim();
+  
+  // CREAR VERSIÓN HTML (PARA MOSTRAR)
+  const promptHTML = `
+Prompt para Asistente IA – "${data.nombre_negocio||'[Nombre negocio]'}"
+
+${contextoPrincipal}
+
+---
+
+${instruccionesGenerales}${firmaInstruccion}${seccionFAQ}${window.flujos.map((flujo, flujoIdx) => {
+  const esUnicoFlujo = window.flujos.length === 1;
+  const tituloFlujo = esUnicoFlujo ? "**Flujo principal:**" : `**${flujo.nombre}:**`;
+  
+  // Usar función de HTML
+  const pasosFlujo = flujo.pasos.map((p, index) => {
+    const numeroPaso = `${index + 1}. `;
+    return `${numeroPaso}${formatoPasoHTML(p)}`;
+  }).join('<br><br>');
+  
+  return `${tituloFlujo}
+
+${pasosFlujo}`;
 }).join('<br><br>---<br><br>')}
   `.trim();
   
-  let htmlPrompt = window.formatNegritas(prompt);
+  // Procesar HTML para mostrar
+  let htmlPrompt = window.formatNegritas(promptHTML);
   htmlPrompt = window.formatPromptSalto(htmlPrompt);
+  
+  // Actualizar el contenido
   document.getElementById("output").innerHTML = htmlPrompt;
+  
+  // Guardar la versión de texto plano limpia (SIN ** para negritas)
+  const textoPlanoLimpio = promptTextoPlano.replace(/\*\*(.*?)\*\*/g, '$1');
+  document.getElementById("output").setAttribute('data-texto-plano', textoPlanoLimpio);
+  
+  // Agregar el botón de copiar si no existe
+  if (!document.querySelector('.copy-training-btn')) {
+    const copyButton = document.createElement('button');
+    copyButton.className = 'copy-training-btn';
+    copyButton.onclick = copiarEntrenamiento;
+    copyButton.title = 'Copiar entrenamiento al portapapeles';
+    copyButton.innerHTML = '<span class="copy-icon">📋</span><span class="copy-text">Copiar Entrenamiento</span>';
+    document.getElementById("output").appendChild(copyButton);
+  }
 }
 
 window.renderFlujos();

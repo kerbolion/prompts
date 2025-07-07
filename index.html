@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <title>Generador de Flujo Conversacional IA</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<!-- Botón toggle modo oscuro -->
+<button class="theme-toggle" onclick="toggleTheme()" title="Cambiar modo oscuro/claro">
+  <span class="icon"></span>
+</button>
+
 <div class="container">
   <div class="formulario">
     <h2>Generador de Flujo Conversacional IA</h2>
@@ -242,7 +247,14 @@ Mantente siempre en contexto de pedidos.</textarea>
       <button class="boton-peq" onclick="window.loadFunctions()">🔄 Recargar Funciones</button>
     </div>
   </div>
-  <div class="resultado" id="output"></div>
+  
+  <div class="resultado" id="output">
+    <!-- Botón flotante para copiar entrenamiento -->
+    <button class="copy-training-btn" onclick="copiarEntrenamiento()" title="Copiar entrenamiento al portapapeles">
+      <span class="copy-icon">📋</span>
+      <span class="copy-text">Copiar Entrenamiento</span>
+    </button>
+  </div>
 </div>
 
 <!-- Cargar scripts en orden -->
@@ -250,5 +262,300 @@ Mantente siempre en contexto de pedidos.</textarea>
 <script src="functions/function-manager.js"></script>
 <script src="flujo_gui.js"></script>
 <script src="ensamblador_prompt.js"></script>
+
+<<script>
+// Función para copiar el entrenamiento al portapapeles (SIN ETIQUETAS HTML)
+function copiarEntrenamiento() {
+  const outputElement = document.getElementById("output");
+  const copyBtn = document.querySelector(".copy-training-btn");
+  
+  // Obtener el texto plano guardado
+  let textoEntrenamiento = outputElement.getAttribute('data-texto-plano');
+  
+  if (!textoEntrenamiento) {
+    // Fallback: procesar el HTML para obtener texto limpio
+    const clonedOutput = outputElement.cloneNode(true);
+    
+    // Remover el botón del clon para no incluirlo en el texto copiado
+    const buttonInClone = clonedOutput.querySelector('.copy-training-btn');
+    if (buttonInClone) {
+      buttonInClone.remove();
+    }
+    
+    // Obtener el HTML interno
+    let htmlContent = clonedOutput.innerHTML;
+    
+    // Convertir etiquetas HTML a texto plano
+    htmlContent = htmlContent
+      // Convertir <br> y <br/> a saltos de línea
+      .replace(/<br\s*\/?>/gi, '\n')
+      // Convertir </p>, </div>, </h1>, etc. a saltos de línea
+      .replace(/<\/(p|div|h[1-6]|li|tr)>/gi, '\n')
+      // Remover todas las demás etiquetas HTML pero mantener el contenido
+      .replace(/<[^>]*>/g, '')
+      // Decodificar entidades HTML
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      // Limpiar espacios y saltos de línea extras
+      .replace(/\n\s*\n\s*\n/g, '\n\n') // Máximo 2 saltos de línea consecutivos
+      .replace(/^\s+|\s+$/g, '') // Trim general
+      .replace(/[ \t]+$/gm, '') // Remover espacios al final de cada línea
+      .replace(/[ \t]+/g, ' '); // Múltiples espacios a uno solo
+    
+    textoEntrenamiento = htmlContent;
+  }
+  
+  // Copiar al portapapeles
+  navigator.clipboard.writeText(textoEntrenamiento).then(function() {
+    // Feedback visual - cambiar temporalmente el botón
+    const originalHTML = copyBtn.innerHTML;
+    copyBtn.innerHTML = '<span class="copy-icon">✅</span><span class="copy-text">¡Copiado!</span>';
+    copyBtn.classList.add('copied');
+    
+    // Restaurar el botón después de 2 segundos
+    setTimeout(function() {
+      copyBtn.innerHTML = originalHTML;
+      copyBtn.classList.remove('copied');
+    }, 2000);
+    
+  }).catch(function(err) {
+    // Fallback para navegadores que no soportan clipboard API
+    console.error('Error al copiar: ', err);
+    
+    // Mostrar mensaje de error temporal
+    const originalHTML = copyBtn.innerHTML;
+    copyBtn.innerHTML = '<span class="copy-icon">❌</span><span class="copy-text">Error al copiar</span>';
+    
+    setTimeout(function() {
+      copyBtn.innerHTML = originalHTML;
+    }, 2000);
+    
+    // Intentar método alternativo (seleccionar y copiar)
+    try {
+      const textArea = document.createElement('textarea');
+      textArea.value = textoEntrenamiento;
+      textArea.style.position = 'fixed';
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      
+      // Actualizar feedback si el método alternativo funciona
+      copyBtn.innerHTML = '<span class="copy-icon">✅</span><span class="copy-text">¡Copiado!</span>';
+      copyBtn.classList.add('copied');
+      
+      setTimeout(function() {
+        copyBtn.innerHTML = originalHTML;
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    } catch (fallbackErr) {
+      console.error('Error en método alternativo: ', fallbackErr);
+    }
+  });
+}
+
+// Sistema de modo oscuro
+function toggleTheme() {
+  const html = document.documentElement;
+  const currentTheme = html.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  
+  html.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  
+  // Efecto de transición suave
+  document.body.style.transition = 'all 0.3s ease';
+  setTimeout(() => {
+    document.body.style.transition = '';
+  }, 300);
+}
+
+// Cargar tema guardado al iniciar
+function loadSavedTheme() {
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+}
+
+// Detectar preferencia del sistema
+function detectSystemTheme() {
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    return 'dark';
+  }
+  return 'light';
+}
+
+// Inicializar tema
+document.addEventListener('DOMContentLoaded', function() {
+  // Si no hay tema guardado, usar preferencia del sistema
+  if (!localStorage.getItem('theme')) {
+    const systemTheme = detectSystemTheme();
+    localStorage.setItem('theme', systemTheme);
+  }
+  
+  loadSavedTheme();
+  
+  // Escuchar cambios en la preferencia del sistema
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+      // Solo cambiar automáticamente si el usuario no ha establecido una preferencia manual
+      const userHasPreference = localStorage.getItem('theme-user-set');
+      if (!userHasPreference) {
+        const newTheme = e.matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+      }
+    });
+  }
+});
+
+// Marcar que el usuario ha establecido una preferencia manual
+const originalToggle = toggleTheme;
+toggleTheme = function() {
+  localStorage.setItem('theme-user-set', 'true');
+  originalToggle();
+};
+
+// Atajos de teclado
+document.addEventListener('keydown', function(e) {
+  // Ctrl/Cmd + Shift + D para cambiar tema
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
+    e.preventDefault();
+    toggleTheme();
+  }
+  
+  // Ctrl/Cmd + Shift + C para copiar entrenamiento
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
+    e.preventDefault();
+    copiarEntrenamiento();
+  }
+});
+
+// Agregar este código al final de tu index.html, dentro de la sección <script>
+
+// Función para auto-ajustar altura de textareas
+function autoResizeTextarea(textarea) {
+  // Resetear altura para calcular la nueva
+  textarea.style.height = 'auto';
+  
+  // Calcular nueva altura basada en scrollHeight
+  const newHeight = Math.min(
+    Math.max(textarea.scrollHeight, parseInt(getComputedStyle(textarea).minHeight)),
+    parseInt(getComputedStyle(textarea).maxHeight)
+  );
+  
+  textarea.style.height = newHeight + 'px';
+}
+
+// Aplicar auto-resize a todos los textareas existentes
+function initAutoResizeTextareas() {
+  const textareas = document.querySelectorAll('textarea');
+  
+  textareas.forEach(textarea => {
+    // Ajustar altura inicial
+    autoResizeTextarea(textarea);
+    
+    // Agregar event listeners para input y paste
+    textarea.addEventListener('input', function() {
+      autoResizeTextarea(this);
+    });
+    
+    textarea.addEventListener('paste', function() {
+      // Timeout para que se procese el paste primero
+      setTimeout(() => {
+        autoResizeTextarea(this);
+      }, 10);
+    });
+  });
+}
+
+// Función para observar nuevos textareas que se agreguen dinámicamente
+function observeNewTextareas() {
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      mutation.addedNodes.forEach(function(node) {
+        if (node.nodeType === 1) { // Solo elementos
+          // Buscar textareas en el nodo agregado
+          const newTextareas = node.querySelectorAll ? node.querySelectorAll('textarea') : [];
+          const isTextarea = node.tagName === 'TEXTAREA';
+          
+          if (isTextarea) {
+            setupTextarea(node);
+          }
+          
+          newTextareas.forEach(setupTextarea);
+        }
+      });
+    });
+  });
+  
+  // Observar cambios en todo el documento
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+}
+
+// Configurar un textarea individual
+function setupTextarea(textarea) {
+  // Ajustar altura inicial
+  autoResizeTextarea(textarea);
+  
+  // Agregar event listeners si no los tiene ya
+  if (!textarea.hasAttribute('data-auto-resize')) {
+    textarea.setAttribute('data-auto-resize', 'true');
+    
+    textarea.addEventListener('input', function() {
+      autoResizeTextarea(this);
+    });
+    
+    textarea.addEventListener('paste', function() {
+      setTimeout(() => {
+        autoResizeTextarea(this);
+      }, 10);
+    });
+  }
+}
+
+// Inicializar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+  // Inicializar textareas existentes
+  initAutoResizeTextareas();
+  
+  // Observar nuevos textareas
+  observeNewTextareas();
+});
+
+// También ejecutar cuando se renderizan los pasos o se cambian las pestañas
+const originalRenderPasos = window.renderPasos;
+if (originalRenderPasos) {
+  window.renderPasos = function() {
+    originalRenderPasos.apply(this, arguments);
+    // Reinicializar textareas después de renderizar
+    setTimeout(initAutoResizeTextareas, 100);
+  };
+}
+
+// Ejecutar cuando se agregan nuevas reglas o FAQ
+const originalAgregarRegla = window.agregarRegla;
+if (originalAgregarRegla) {
+  window.agregarRegla = function() {
+    originalAgregarRegla.apply(this, arguments);
+    setTimeout(initAutoResizeTextareas, 100);
+  };
+}
+
+const originalAgregarFAQ = window.agregarFAQ;
+if (originalAgregarFAQ) {
+  window.agregarFAQ = function() {
+    originalAgregarFAQ.apply(this, arguments);
+    setTimeout(initAutoResizeTextareas, 100);
+  };
+}
+</script>
 </body>
 </html>

@@ -49,7 +49,9 @@ window.actualizarPrompt = function () {
           }
         } else {
           // Para otras funciones, mostrar parámetros normales
-          params = fn.params.map(param => param.nombre + ': "' + (f.params[param.nombre] || "") + '"').join(', ');
+          if (fn && fn.params) {
+            params = fn.params.map(param => param.nombre + ': "' + (f.params[param.nombre] || "") + '"').join(', ');
+          }
         }
         
         return `\n    Ejecuta la función: ${nombreFuncion}({${params}})`;
@@ -83,7 +85,9 @@ window.actualizarPrompt = function () {
           }
         } else {
           // Para otras funciones, mostrar parámetros normales
-          params = fn.params.map(param => param.nombre + ': "' + (f.params[param.nombre] || "") + '"').join(', ');
+          if (fn && fn.params) {
+            params = fn.params.map(param => param.nombre + ': "' + (f.params[param.nombre] || "") + '"').join(', ');
+          }
         }
         
         return `<br>    Ejecuta la función: <strong>${nombreFuncion}({${params}})</strong>`;
@@ -111,7 +115,7 @@ ${data.incluye_saludo ? '- Incluye saludo inicial' : ''}
 ${data.incluye_despedida ? '- Incluye despedida' : ''}
 
 ${reglas.length > 0 ? '**Reglas de comportamiento:**' : ''}
-${reglas.map((regla, index) => `${index}. ${regla}`).join('\n')}
+${reglas.map((regla, index) => `${index + 1}. ${regla}`).join('\n')}
 
 ---
 `;
@@ -147,6 +151,9 @@ ${faqs.map(faq => `- **${faq.pregunta}**\n  ${faq.respuesta}`).join('\n')}
 `;
   }
   
+  // Obtener flujos desde la aplicación global
+  const flujos = window.app ? window.app.flujos : window.flujos || [];
+  
   // CREAR VERSIÓN TEXTO PLANO (SIN HTML)
   const promptTextoPlano = `
 Prompt para Asistente IA – "${data.nombre_negocio||'[Nombre negocio]'}"
@@ -155,8 +162,8 @@ ${contextoPrincipal}
 
 ---
 
-${instruccionesGenerales}${firmaInstruccion}${seccionFAQ}${window.flujos.map((flujo, flujoIdx) => {
-  const esUnicoFlujo = window.flujos.length === 1;
+${instruccionesGenerales}${firmaInstruccion}${seccionFAQ}${flujos.map((flujo, flujoIdx) => {
+  const esUnicoFlujo = flujos.length === 1;
   const tituloFlujo = esUnicoFlujo ? "**Flujo principal:**" : `**${flujo.nombre}:**`;
   
   // Usar función de texto plano
@@ -179,8 +186,8 @@ ${contextoPrincipal}
 
 ---
 
-${instruccionesGenerales}${firmaInstruccion}${seccionFAQ}${window.flujos.map((flujo, flujoIdx) => {
-  const esUnicoFlujo = window.flujos.length === 1;
+${instruccionesGenerales}${firmaInstruccion}${seccionFAQ}${flujos.map((flujo, flujoIdx) => {
+  const esUnicoFlujo = flujos.length === 1;
   const tituloFlujo = esUnicoFlujo ? "**Flujo principal:**" : `**${flujo.nombre}:**`;
   
   // Usar función de HTML
@@ -200,21 +207,35 @@ ${pasosFlujo}`;
   htmlPrompt = window.formatPromptSalto(htmlPrompt);
   
   // Actualizar el contenido
-  document.getElementById("output").innerHTML = htmlPrompt;
-  
-  // Guardar la versión de texto plano limpia (SIN ** para negritas)
-  const textoPlanoLimpio = promptTextoPlano.replace(/\*\*(.*?)\*\*/g, '$1');
-  document.getElementById("output").setAttribute('data-texto-plano', textoPlanoLimpio);
-  
-  // Agregar el botón de copiar si no existe
-  if (!document.querySelector('.copy-training-btn')) {
-    const copyButton = document.createElement('button');
-    copyButton.className = 'copy-training-btn';
-    copyButton.onclick = copiarEntrenamiento;
-    copyButton.title = 'Copiar entrenamiento al portapapeles';
-    copyButton.innerHTML = '<span class="copy-icon">📋</span><span class="copy-text">Copiar Entrenamiento</span>';
-    document.getElementById("output").appendChild(copyButton);
+  const outputElement = document.getElementById("output");
+  if (outputElement) {
+    outputElement.innerHTML = htmlPrompt;
+    
+    // Guardar la versión de texto plano limpia (SIN ** para negritas)
+    const textoPlanoLimpio = promptTextoPlano.replace(/\*\*(.*?)\*\*/g, '$1');
+    outputElement.setAttribute('data-texto-plano', textoPlanoLimpio);
+    
+    // Agregar el botón de copiar si no existe
+    if (!document.querySelector('.copy-training-btn')) {
+      const copyButton = document.createElement('button');
+      copyButton.type = 'button';
+      copyButton.className = 'copy-training-btn';
+      copyButton.onclick = copiarEntrenamiento;
+      copyButton.title = 'Copiar entrenamiento al portapapeles';
+      copyButton.innerHTML = '<span class="copy-icon">📋</span><span class="copy-text">Copiar Entrenamiento</span>';
+      outputElement.appendChild(copyButton);
+    }
   }
 }
 
-window.renderFlujos();
+// Función de inicialización para compatibilidad
+document.addEventListener('DOMContentLoaded', function() {
+  // Esperar a que la app esté lista
+  setTimeout(() => {
+    if (window.app && typeof window.app.renderFlujos === 'function') {
+      window.app.renderFlujos();
+    } else if (window.renderFlujos) {
+      window.renderFlujos();
+    }
+  }, 100);
+});

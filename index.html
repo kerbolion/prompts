@@ -22,7 +22,7 @@
       <div class="flex-2">
         <div>
           <label>Proyecto actual:</label>
-          <select id="selector-proyectos" onchange="cambiarProyecto(this.value)">
+          <select id="selector-proyectos" onchange="app.cambiarProyecto(this.value)">
             <option value="">Seleccionar proyecto...</option>
           </select>
         </div>
@@ -33,22 +33,22 @@
       </div>
       
       <div style="margin: 15px 0;">
-        <button class="boton project-btn-create" onclick="crearProyectoDesdeInput()">➕ Crear Proyecto</button>
-        <button class="boton project-btn-save" onclick="guardarVersion()">💾 Guardar Versión</button>
-        <button class="boton project-btn-delete" onclick="eliminarProyecto()">🗑️ Eliminar Proyecto</button>
-        <button class="boton project-btn-import" onclick="importarProyecto()">📥 Importar Proyecto</button>
+        <button type="button" class="boton project-btn-create" onclick="app.crearProyectoDesdeInput()">➕ Crear Proyecto</button>
+        <button type="button" class="boton project-btn-save" onclick="app.guardarVersion()">💾 Guardar Versión</button>
+        <button type="button" class="boton project-btn-delete" onclick="app.eliminarProyecto()">🗑️ Eliminar Proyecto</button>
+        <button type="button" class="boton project-btn-import" onclick="app.importarProyecto()">📥 Importar Proyecto</button>
       </div>
       
       <div class="flex-2" style="border-top: 1px solid #d0e8ff; padding-top: 12px;">
         <div>
           <label>Versión actual:</label>
-          <select id="selector-versiones" onchange="cargarVersion(this.value)">
+          <select id="selector-versiones" onchange="app.cargarVersion(this.value)">
             <option value="">Sin versiones guardadas</option>
           </select>
         </div>
         <div>
-          <button class="boton-peq export-btn" onclick="exportarPrompt()">📄 Exportar TXT</button>
-          <button class="boton-peq export-btn" onclick="exportarProyecto()">📁 Exportar Proyecto</button>
+          <button type="button" class="boton-peq export-btn" onclick="app.exportarPrompt()">📄 Exportar TXT</button>
+          <button type="button" class="boton-peq export-btn" onclick="app.exportarProyecto()">📁 Exportar Proyecto</button>
         </div>
       </div>
     </div>
@@ -58,15 +58,15 @@
     <!-- Sistema de Pestañas -->
     <div class="tabs-container">
       <div class="tabs-header">
-        <button class="tab-btn active" onclick="cambiarPestana(0)">
+        <button type="button" class="tab-btn active" onclick="app.cambiarPestana(0)">
           <span class="tab-icon">⚙️</span>
           <span class="tab-text">Configuración</span>
         </button>
-        <button class="tab-btn" onclick="cambiarPestana(1)">
+        <button type="button" class="tab-btn" onclick="app.cambiarPestana(1)">
           <span class="tab-icon">🔄</span>
           <span class="tab-text">Flujos</span>
         </button>
-        <button class="tab-btn" onclick="cambiarPestana(2)">
+        <button type="button" class="tab-btn" onclick="app.cambiarPestana(2)">
           <span class="tab-icon">❓</span>
           <span class="tab-text">FAQ</span>
         </button>
@@ -157,26 +157,26 @@ Mantente siempre en contexto de pedidos.</textarea>
           <div id="reglas-container">
             <div class="regla-item">
               <input type="text" class="regla-input" placeholder="Ej. Pregunta una cosa a la vez" value="Pregunta una cosa a la vez">
-              <button class="del-regla" onclick="eliminarRegla(this)">×</button>
+              <button type="button" class="del-regla" onclick="app.eliminarRegla(this)">×</button>
             </div>
             <div class="regla-item">
               <input type="text" class="regla-input" placeholder="Ej. Envía los enlaces sin formato" value="Envía los enlaces sin formato">
-              <button class="del-regla" onclick="eliminarRegla(this)">×</button>
+              <button type="button" class="del-regla" onclick="app.eliminarRegla(this)">×</button>
             </div>
             <div class="regla-item">
               <input type="text" class="regla-input" placeholder="Ej. Debes usar en tus respuestas el formato de la información proporcionada" value="Debes usar en tus respuestas el formato de la información proporcionada">
-              <button class="del-regla" onclick="eliminarRegla(this)">×</button>
+              <button type="button" class="del-regla" onclick="app.eliminarRegla(this)">×</button>
             </div>
             <div class="regla-item">
               <input type="text" class="regla-input" placeholder="Ej. No proporciones información fuera de este documento" value="No proporciones información fuera de este documento">
-              <button class="del-regla" onclick="eliminarRegla(this)">×</button>
+              <button type="button" class="del-regla" onclick="app.eliminarRegla(this)">×</button>
             </div>
             <div class="regla-item">
               <input type="text" class="regla-input" placeholder="Ej. No cambies ni omitas negritas, emojis, signos ni estructura" value="No cambies ni omitas negritas, emojis, signos ni estructura">
-              <button class="del-regla" onclick="eliminarRegla(this)">×</button>
+              <button type="button" class="del-regla" onclick="app.eliminarRegla(this)">×</button>
             </div>
           </div>
-          <button class="boton-peq" onclick="agregarRegla()">➕ Agregar Regla</button>
+          <button type="button" class="boton-peq" onclick="app.agregarRegla()">➕ Agregar Regla</button>
         </div>
       </div>
 
@@ -188,25 +188,25 @@ Mantente siempre en contexto de pedidos.</textarea>
             <div class="flex-2">
               <div>
                 <label>Flujo actual:</label>
-                <select id="selector-flujos" onchange="cambiarFlujo(this.value)">
+                <select id="selector-flujos" onchange="app.cambiarFlujo(this.value)">
                   <!-- Se llena dinámicamente -->
                 </select>
               </div>
               <div>
                 <label>Nombre del flujo:</label>
-                <input type="text" id="nombre-flujo-actual" placeholder="Nombre del flujo" oninput="renombrarFlujo(this.value)">
+                <input type="text" id="nombre-flujo-actual" placeholder="Nombre del flujo" oninput="app.renombrarFlujo(this.value)">
               </div>
             </div>
             <div class="flujos-buttons">
-              <button class="boton-peq flujo-btn" onclick="agregarFlujo()">➕ Nuevo Flujo</button>
-              <button class="boton-peq flujo-btn delete" onclick="eliminarFlujo()">🗑️ Eliminar Flujo</button>
+              <button type="button" class="boton-peq flujo-btn" onclick="app.agregarFlujo()">➕ Nuevo Flujo</button>
+              <button type="button" class="boton-peq flujo-btn delete" onclick="app.eliminarFlujo()">🗑️ Eliminar Flujo</button>
             </div>
           </div>
         </div>
 
         <div class="pasos-title">Etapas del Flujo Actual:</div>
         <div class="pasos" id="pasos"></div>
-        <button class="boton" onclick="agregarPaso();">➕ Agregar Paso</button>
+        <button type="button" class="boton" onclick="app.agregarPaso();">➕ Agregar Paso</button>
       </div>
 
       <!-- Pestaña 3: Preguntas Frecuentes -->
@@ -216,41 +216,42 @@ Mantente siempre en contexto de pedidos.</textarea>
           <div id="faq-container">
             <div class="faq-item">
               <label>Pregunta:</label>
-              <input type="text" class="faq-pregunta" placeholder="Ej. ¿Cuáles son los horarios de atención?" value="¿Cuáles son los horarios de atención?" oninput="window.actualizarPrompt()">
+              <input type="text" class="faq-pregunta" placeholder="Ej. ¿Cuáles son los horarios de atención?" value="¿Cuáles son los horarios de atención?">
               <label>Respuesta:</label>
-              <textarea class="faq-respuesta" rows="2" placeholder="Ej. Atendemos de lunes a domingo de 8:00 AM a 10:00 PM" oninput="window.actualizarPrompt()">Atendemos de lunes a domingo de 8:00 AM a 10:00 PM</textarea>
-              <button class="del-faq" onclick="eliminarFAQ(this)">×</button>
+              <textarea class="faq-respuesta" rows="2" placeholder="Ej. Atendemos de lunes a domingo de 8:00 AM a 10:00 PM">Atendemos de lunes a domingo de 8:00 AM a 10:00 PM</textarea>
+              <button type="button" class="del-faq" onclick="app.eliminarFAQ(this)">×</button>
             </div>
             <div class="faq-item">
               <label>Pregunta:</label>
-              <input type="text" class="faq-pregunta" placeholder="Ej. ¿Hacen delivery?" value="¿Hacen delivery?" oninput="window.actualizarPrompt()">
+              <input type="text" class="faq-pregunta" placeholder="Ej. ¿Hacen delivery?" value="¿Hacen delivery?">
               <label>Respuesta:</label>
-              <textarea class="faq-respuesta" rows="2" placeholder="Ej. Sí, hacemos delivery en un radio de 5km" oninput="window.actualizarPrompt()">Sí, hacemos delivery en un radio de 5km</textarea>
-              <button class="del-faq" onclick="eliminarFAQ(this)">×</button>
+              <textarea class="faq-respuesta" rows="2" placeholder="Ej. Sí, hacemos delivery en un radio de 5km">Sí, hacemos delivery en un radio de 5km</textarea>
+              <button type="button" class="del-faq" onclick="app.eliminarFAQ(this)">×</button>
             </div>
             <div class="faq-item">
               <label>Pregunta:</label>
-              <input type="text" class="faq-pregunta" placeholder="Ej. ¿Cuál es el monto mínimo para delivery?" value="¿Cuál es el monto mínimo para delivery?" oninput="window.actualizarPrompt()">
+              <input type="text" class="faq-pregunta" placeholder="Ej. ¿Cuál es el monto mínimo para delivery?" value="¿Cuál es el monto mínimo para delivery?">
               <label>Respuesta:</label>
-              <textarea class="faq-respuesta" rows="2" placeholder="Ej. El monto mínimo para delivery es ₡3,000" oninput="window.actualizarPrompt()">El monto mínimo para delivery es ₡3,000</textarea>
-              <button class="del-faq" onclick="eliminarFAQ(this)">×</button>
+              <textarea class="faq-respuesta" rows="2" placeholder="Ej. El monto mínimo para delivery es ₡3,000">El monto mínimo para delivery es ₡3,000</textarea>
+              <button type="button" class="del-faq" onclick="app.eliminarFAQ(this)">×</button>
             </div>
           </div>
-          <button class="boton-peq" onclick="agregarFAQ()">➕ Agregar Pregunta Frecuente</button>
+          <button type="button" class="boton-peq" onclick="app.agregarFAQ()">➕ Agregar Pregunta Frecuente</button>
         </div>
       </div>
     </div>
 
     <!-- Panel de debug/información -->
     <div class="debug-panel" style="margin-top: 20px;">
-      <button class="boton-peq" onclick="window.listFunctions()">📋 Listar Funciones</button>
-      <button class="boton-peq" onclick="window.loadFunctions()">🔄 Recargar Funciones</button>
+      <button type="button" class="boton-peq" onclick="window.listFunctions()">📋 Listar Funciones</button>
+      <button type="button" class="boton-peq" onclick="window.loadFunctions()">🔄 Recargar Funciones</button>
+      <button type="button" class="boton-peq" onclick="window.debugApp()">🐛 Debug App</button>
     </div>
   </div>
   
   <div class="resultado" id="output">
     <!-- Botón flotante para copiar entrenamiento -->
-    <button class="copy-training-btn" onclick="copiarEntrenamiento()" title="Copiar entrenamiento al portapapeles">
+    <button type="button" class="copy-training-btn" onclick="copiarEntrenamiento()" title="Copiar entrenamiento al portapapeles">
       <span class="copy-icon">📋</span>
       <span class="copy-text">Copiar Entrenamiento</span>
     </button>
@@ -263,7 +264,7 @@ Mantente siempre en contexto de pedidos.</textarea>
 <script src="flujo_gui.js"></script>
 <script src="ensamblador_prompt.js"></script>
 
-<<script>
+<script>
 // Función para copiar el entrenamiento al portapapeles (SIN ETIQUETAS HTML)
 function copiarEntrenamiento() {
   const outputElement = document.getElementById("output");
@@ -434,7 +435,6 @@ document.addEventListener('keydown', function(e) {
     copiarEntrenamiento();
   }
 });
-
 
 </script>
 </body>

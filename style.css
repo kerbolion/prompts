@@ -224,17 +224,27 @@ label {
 input, textarea, select {
   width: -webkit-fill-available; 
   margin-bottom: 20px; 
-  padding: 10px 8px; 
+  padding: 8px; 
   font-size: 15px;
   border: 1.2px solid var(--border-secondary); 
   border-radius: 6px; 
   background: var(--input-bg); 
   color: var(--input-text);
   transition: border-color 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+  box-sizing: border-box;
 }
 
+/* FIX ESPECÍFICO PARA TEXTAREAS - ELIMINAR ESPACIO EXTRA */
 textarea {
   resize: vertical;
+  overflow: hidden;
+  transition: height 0.2s ease;
+  min-height: 36px !important; /* Altura mínima muy pequeña */
+  line-height: 1.4 !important;
+  padding: 8px !important; /* Padding consistente y pequeño */
+  font-family: inherit;
+  vertical-align: top; /* Eliminar espacio extra en la base */
+  display: block; /* Asegurar que sea block level */
 }
 
 input:focus, textarea:focus, select:focus { 
@@ -271,6 +281,14 @@ input:focus, textarea:focus, select:focus {
 .paso-box:hover { 
   box-shadow: 0 4px 16px var(--shadow-dark);
   transform: translateY(-2px);
+}
+
+/* FIX PARA TEXTAREAS EN PASOS */
+.paso-box textarea {
+  min-height: 36px !important;
+  line-height: 1.4 !important;
+  padding: 8px !important;
+  margin-bottom: 8px !important;
 }
 
 .del-paso, .move-paso { 
@@ -589,6 +607,8 @@ input:focus, textarea:focus, select:focus {
 .regla-input {
   flex: 1;
   margin-bottom: 0 !important;
+  min-height: 32px !important;
+  padding: 6px !important;
 }
 
 .del-regla {
@@ -735,6 +755,18 @@ input:focus, textarea:focus, select:focus {
   color: var(--input-text);
 }
 
+/* FIX ESPECÍFICO PARA FAQ */
+.faq-pregunta {
+  min-height: 32px !important;
+  padding: 6px !important;
+}
+
+.faq-respuesta {
+  min-height: 36px !important;
+  padding: 6px !important;
+  line-height: 1.4 !important;
+}
+
 .faq-pregunta:focus, .faq-respuesta:focus {
   border-color: #8A50E2;
 }
@@ -762,11 +794,12 @@ input:focus, textarea:focus, select:focus {
   margin-bottom: 12px;
 }
 
-/* Contexto principal */
+/* Contexto principal - PUEDE SER MÁS ALTO */
 #contexto_principal {
-  min-height: 80px;
+  min-height: 70px !important;
   font-family: 'Segoe UI', Arial, sans-serif;
   line-height: 1.4;
+  padding: 10px !important;
 }
 
 /* Sistema de Gestión de Proyectos */
@@ -1071,6 +1104,8 @@ input:valid, textarea:valid, select:valid {
   background: var(--input-bg);
   color: var(--input-text);
   font-size: 13px;
+  min-height: 30px !important;
+  padding: 6px !important;
 }
 
 .campo-dinamico input:focus,
@@ -1110,4 +1145,3 @@ input:valid, textarea:valid, select:valid {
 * {
   transition: border-color 0.2s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.2s ease;
 }
-

@@ -1111,36 +1111,3 @@ input:valid, textarea:valid, select:valid {
   transition: border-color 0.2s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.2s ease;
 }
 
-/* Agregar estos estilos al final de tu style.css */
-
-/* Textareas auto-ajustables */
-textarea {
-  min-height: 40px; /* Altura mínima */
-  max-height: 200px; /* Altura máxima para evitar textareas muy grandes */
-  overflow-y: auto; /* Scroll cuando excede la altura máxima */
-  transition: height 0.2s ease; /* Transición suave al cambiar altura */
-}
-
-/* Textarea específico para contexto principal (más grande) */
-#contexto_principal {
-  min-height: 80px;
-  max-height: 300px;
-}
-
-/* Textareas en FAQ */
-.faq-respuesta {
-  min-height: 60px;
-  max-height: 150px;
-}
-
-/* Textareas en pasos */
-.paso-box textarea {
-  min-height: 50px;
-  max-height: 180px;
-}
-
-/* Textareas en campos dinámicos */
-.campo-dinamico textarea {
-  min-height: 35px;
-  max-height: 120px;
-}
